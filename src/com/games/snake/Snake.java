@@ -6,8 +6,9 @@ public class Snake extends GameObject
 {
     private int len;
     private Directions curDirection;
-    private float speed;
+    private final float speed;
     private Rectangle shape;
+    private int width, height;
 
     Snake(Point startPosition)
     {
@@ -15,36 +16,60 @@ public class Snake extends GameObject
         curDirection = Directions.RIGHT;
         speed = 14f;
         position = new Point(startPosition);
-        shape = new Rectangle(position.x, position.y, 40, 50);
+        width = 80;
+        height = 40;
+        shape = new Rectangle(position.x, position.y, width, height);
     }
 
-    public Rectangle getShape() {
+    Rectangle getShape() {
         return shape;
     }
 
-    public void onCollision(GameObject obj)
-    {
-
+    public int increaseLen() {
+        len++;
+        width += 10;
+        shape.width = width;
+        return len;
     }
 
-    public void move(Directions dir)
+    boolean onCollision(Ball ball)
+    {
+        return ((ball.position.y >= position.y && ball.position.y <= position.y + shape.height) ||
+                (ball.position.y + ball.getShape().height >= position.y &&
+                        ball.position.y + ball.getShape().height <= position.y + shape.height)) &&
+                (ball.position.x >= position.x && ball.position.x <= position.x + shape.width);
+    }
+
+    void move(Directions dir)
     {
         switch(dir)
         {
-            case UP:
+            case UP: {
                 position.y -= speed;
                 break;
-            case DOWN:
+            }
+            case DOWN: {
                 position.y += speed;
                 break;
-            case LEFT:
+            }
+            case LEFT: {
+                if(position.x + width <= 0)
+                {
+                    position.x = Game.WIDTH;
+                }
                 position.x -= speed;
                 break;
-            case RIGHT:
+            }
+            case RIGHT: {
+                if(position.x >= Game.WIDTH)
+                {
+                    position.x = -width;
+                }
                 position.x += speed;
                 break;
+            }
         }
-        shape = new Rectangle(position.x, position.y, 50, 40);
+        shape = new Rectangle(position.x, position.y, width, height);
     }
 
 }

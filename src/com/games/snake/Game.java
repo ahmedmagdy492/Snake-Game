@@ -8,11 +8,14 @@ import java.awt.event.KeyEvent;
 public class Game extends KeyAdapter
 {
     private boolean isPlaying;
-    private Snake snake;
+    private int score;
+    private int ballSpawnTime;
+    private final Snake snake;
+    private final Ball ball;
     private final Graphics g;
-    private static final int WIDTH = 1024;
-    private static final int HEIGHT = 720;
-
+    private static final int ballSpawnRate = 150;
+    public static final int WIDTH = 1024;
+    public static final int HEIGHT = 720;
     public final static JFrame mainWindow;
 
     static{
@@ -31,6 +34,9 @@ public class Game extends KeyAdapter
         g = mainWindow.getGraphics();
         snake = new Snake(new Point(20, 20));
         mainWindow.addKeyListener(this);
+        ball = new Ball();
+        ballSpawnTime = 0;
+        score = 0;
     }
 
     @Override
@@ -57,7 +63,20 @@ public class Game extends KeyAdapter
                     break;
             }
             g.clearRect(0, 0, WIDTH, HEIGHT);
+            if(ballSpawnTime < ballSpawnRate)
+            {
+                if(ballSpawnTime == 1)
+                {
+                    ball.spawn();
+                }
+                ballSpawnTime++;
+            }
+            else
+            {
+                ballSpawnTime = 0;
+            }
             draw();
+            logic();
         }
     }
 
@@ -68,10 +87,6 @@ public class Game extends KeyAdapter
         g.drawString("Press Any Key To Start ...", (WIDTH - strWidth) / 2, HEIGHT / 2);
 
         isPlaying = true;
-        while(isPlaying)
-        {
-            logic();
-        }
     }
 
     public void stop()
@@ -81,7 +96,16 @@ public class Game extends KeyAdapter
 
     public void logic()
     {
-
+        boolean isCollided = snake.onCollision(ball);
+        if(isCollided)
+        {
+            score++;
+            System.out.println("Score: " + score);
+            g.setColor(Color.WHITE);
+            g.clearRect(ball.position.x, ball.position.y, ball.getShape().width, ball.getShape().height);
+            snake.increaseLen();
+            ball.spawn();
+        }
     }
 
     public void draw()
@@ -90,6 +114,8 @@ public class Game extends KeyAdapter
         g.clearRect(0, 0, WIDTH, HEIGHT);
         g.setColor(Color.red);
         g.fillRect(snake.getShape().x, snake.getShape().y, snake.getShape().width, snake.getShape().height);
+        g.setColor(Color.YELLOW);
+        g.fillRect(ball.getShape().x, ball.getShape().y, ball.getShape().width, ball.getShape().height);
         g.setColor(Color.white);
     }
 }
