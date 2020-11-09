@@ -32,7 +32,7 @@ public class Game extends KeyAdapter
     {
         isPlaying = false;
         g = mainWindow.getGraphics();
-        snake = new Snake(new Point(20, 20));
+        snake = new Snake(new Point((WIDTH - 80 )/ 2, HEIGHT / 2));
         mainWindow.addKeyListener(this);
         ball = new Ball();
         ballSpawnTime = 0;
@@ -83,9 +83,11 @@ public class Game extends KeyAdapter
     public void start()
     {
         g.setColor(Color.white);
+        g.setFont(new Font("Tahoma", Font.BOLD, 65));
+        g.drawString("Snake Game", (WIDTH - g.getFontMetrics().stringWidth("Snake Game")) / 2, HEIGHT / 2 - 100);
+        g.setFont(new Font("Tahoma", Font.BOLD, 16));
         int strWidth = g.getFontMetrics().stringWidth("Press Any Key To Start ...");
         g.drawString("Press Any Key To Start ...", (WIDTH - strWidth) / 2, HEIGHT / 2);
-
         isPlaying = true;
     }
 
@@ -110,6 +112,7 @@ public class Game extends KeyAdapter
 
     public void draw()
     {
+        g.setFont(new Font("Tahoma", Font.BOLD, 16));
         g.setColor(Color.white);
         g.clearRect(0, 0, WIDTH, HEIGHT);
         g.setColor(Color.red);
@@ -117,5 +120,11 @@ public class Game extends KeyAdapter
         g.setColor(Color.YELLOW);
         g.fillRect(ball.getShape().x, ball.getShape().y, ball.getShape().width, ball.getShape().height);
         g.setColor(Color.white);
+
+        // drawing the menu
+        g.setColor(Color.BLACK);
+        g.fillRect(0, HEIGHT - 70, WIDTH, 70);
+        g.setColor(Color.white);
+        g.drawString("Score: " + score, 20, HEIGHT - 50);
     }
 }

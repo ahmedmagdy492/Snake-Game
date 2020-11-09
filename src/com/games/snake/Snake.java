@@ -14,7 +14,7 @@ public class Snake extends GameObject
     {
         len = 0;
         curDirection = Directions.RIGHT;
-        speed = 14f;
+        speed = 20f;
         position = new Point(startPosition);
         width = 80;
         height = 40;
@@ -45,11 +45,17 @@ public class Snake extends GameObject
         switch(dir)
         {
             case UP: {
-                position.y -= speed;
+                if(position.y > 35)
+                {
+                    position.y -= speed;
+                }
                 break;
             }
             case DOWN: {
-                position.y += speed;
+                if(position.y + height < Game.HEIGHT - 80)
+                {
+                    position.y += speed;
+                }
                 break;
             }
             case LEFT: {
