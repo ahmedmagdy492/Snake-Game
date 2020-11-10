@@ -13,7 +13,7 @@ public class Snake extends GameObject
     Snake(Point startPosition)
     {
         len = 0;
-        curDirection = Directions.RIGHT;
+        curDirection = Directions.UP;
         speed = 20f;
         position = new Point(startPosition);
         width = 80;

@@ -25,7 +25,7 @@ class Ball extends GameObject
     {
         Random rand = new Random();
         position.x = rand.nextInt(Game.WIDTH - width);
-        position.y = rand.nextInt(Game.HEIGHT);
+        position.y = rand.nextInt(Game.HEIGHT - 70 - height);
         shape.x = position.x;
         shape.y = position.y;
         shape.width = width;

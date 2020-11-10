@@ -1,9 +1,11 @@
 package com.games.snake;
 
+import javax.naming.spi.DirectoryManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 public class Game extends KeyAdapter
 {
@@ -14,6 +16,7 @@ public class Game extends KeyAdapter
     private final Ball ball;
     private final Graphics g;
     private static final int ballSpawnRate = 150;
+    private static String lastScore;
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 720;
     public final static JFrame mainWindow;
@@ -78,6 +81,13 @@ public class Game extends KeyAdapter
             draw();
             logic();
         }
+        else
+        {
+            if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+            {
+                isPlaying = true;
+            }
+        }
     }
 
     public void start()
@@ -89,11 +99,36 @@ public class Game extends KeyAdapter
         int strWidth = g.getFontMetrics().stringWidth("Press Any Key To Start ...");
         g.drawString("Press Any Key To Start ...", (WIDTH - strWidth) / 2, HEIGHT / 2);
         isPlaying = true;
+
+        // reading the last score value
+        try
+        {
+            File file = new File("file.txt");
+            if(file.exists())
+            {
+                lastScore = ScoreIO.readLastScore();
+                int lastScoreWidth = g.getFontMetrics().stringWidth("Last Score " + lastScore);
+                g.drawString("Last Score " + lastScore, (WIDTH - lastScoreWidth) / 2, HEIGHT / 2 + 100);
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     public void stop()
     {
         isPlaying = false;
+        // writing the last score
+        try
+        {
+            ScoreIO.writeLastScore(score + "");
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     public void logic()
@@ -102,7 +137,6 @@ public class Game extends KeyAdapter
         if(isCollided)
         {
             score++;
-            System.out.println("Score: " + score);
             g.setColor(Color.WHITE);
             g.clearRect(ball.position.x, ball.position.y, ball.getShape().width, ball.getShape().height);
             snake.increaseLen();
